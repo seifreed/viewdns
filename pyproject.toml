@@ -1,0 +1,76 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "viewdns"
+dynamic = ["version"]
+description = "CLI and library for every ViewDNS.info API endpoint"
+readme = "README.md"
+requires-python = ">=3.14"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Marc Rivero López", email = "mriverolopez@gmail.com" }]
+keywords = ["viewdns", "osint", "dns", "whois", "reverse-ip", "cli"]
+dependencies = [
+    "prettytable",
+    "python-toon",
+]
+
+[project.urls]
+Homepage = "https://github.com/seifreed/viewdns"
+Repository = "https://github.com/seifreed/viewdns"
+Issues = "https://github.com/seifreed/viewdns/issues"
+
+[project.scripts]
+viewdns = "viewdns.cli:main"
+
+# Single source of dependencies: runtime deps are empty (standard library only),
+# development and quality-gate tools live here.
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-cov",
+    "black",
+    "ruff",
+    "mypy",
+    "bandit",
+    "pip-audit",
+]
+
+[tool.hatch.version]
+path = "viewdns/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["viewdns"]
+
+[tool.black]
+line-length = 100
+target-version = ["py314"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py314"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.mypy]
+python_version = "3.14"
+strict = true
+exclude = "^venv/"
+
+# python-toon ships no type stubs; declare it as the untyped external library it is.
+[[tool.mypy.overrides]]
+module = ["toon"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+addopts = "--cov=viewdns --cov-report=term-missing --cov-fail-under=100"
+testpaths = ["tests"]
+
+[tool.coverage.run]
+branch = true
+
+[tool.bandit]
+exclude_dirs = ["tests", "venv"]
